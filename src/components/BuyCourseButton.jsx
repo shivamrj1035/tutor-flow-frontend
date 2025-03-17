@@ -8,15 +8,32 @@ const BuyCourseButton = ({ courseId }) => {
     const [createCheckoutSession, { data, isLoading, isSuccess, isError, error }] =
         useCreateCheckoutSessionMutation();
 
-    const purchaseCourseHandler = async () => {
-        console.log('creating')
-        try {
-            const response = await createCheckoutSession(courseId);
-            console.log("API Response:", response); // Log response
-        } catch (err) {
-            console.error("Error in API Call:", err);
-        }
-    };
+        const purchaseCourseHandler = async () => {
+            try {
+                const response = await createCheckoutSession(courseId);
+        
+                if (response?.data?.url) {
+                    // Append courseId and userId to redirect URL
+                    const successUrl = `${window.location.origin}/purchase-success?courseId=${courseId}&userId=USER_ID`;
+                    window.location.href = response.data.url + `&success_url=${encodeURIComponent(successUrl)}`;
+                } else {
+                    toast.error("Invalid response from server.");
+                }
+            } catch (err) {
+                console.error("Error in API Call:", err);
+                toast.error("Failed to initiate payment.");
+            }
+        };
+    
+    // const purchaseCourseHandler = async () => {
+    //     console.log('creating')
+    //     try {
+    //         const response = await createCheckoutSession(courseId);
+    //         console.log("API Response:", response); // Log response
+    //     } catch (err) {
+    //         console.error("Error in API Call:", err);
+    //     }
+    // };
 
     useEffect(() => {
         console.log('effect')

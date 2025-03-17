@@ -48,17 +48,33 @@ const Profile = () => {
             toast.error(error.message || "Profile failed to update");
         }
     }, [isError,isSuccess,updateUserData,error]);
+    useEffect(() => {
+        if (data?.user) {
+          setName(data.user.name || ""); // Set name if user exists
+        }
+      }, [data]);
     const onChangeHandler = (e) => {
         const file = e.target.files?.[0];
-        if (file) setProfilePhoto(file);
-    };
+        if (file) {
+          // Validate file type (only allow images)
+          const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+          if (!allowedTypes.includes(file.type)) {
+            toast.error("Invalid file type. Please upload an image.");
+            return;
+          }
+          setProfilePhoto(file);
+        }
+      };
+    
 
     const updateUserHandler = async () => {
         const formData = new FormData();
         formData.append("name", name);
-        formData.append("profilePhoto", profilePhoto);
+        if (profilePhoto) {
+          formData.append("profilePhoto", profilePhoto);
+        }
         await updateUser(formData);
-    };
+      };
     // const {user} = data;
 
     const user = data?.user;
@@ -120,7 +136,7 @@ const Profile = () => {
                                         <Label className="text-right">
                                             Name
                                         </Label>
-                                        <Input type="text" onChange={(e) => setName(e.target.value)} placeholder="Enter Name" className="col-span-3"/>
+                                        <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Name" className="col-span-3"/>
                                     </div>
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label className="text-right">

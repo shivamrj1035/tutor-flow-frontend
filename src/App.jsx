@@ -24,6 +24,7 @@ import PurchasedCourseProtection from './components/PurchasedCourseProtection'
 import { ThemeProvider } from './components/ThemeProvider'
 import axios from 'axios'
 import Chatbot from './components/Chatbot'
+import PurchaseSuccess from './components/ui/PurchaseSuccess'
 function App() {
 
     // const location = useLocation();
@@ -40,6 +41,10 @@ function App() {
                             <Courses />
                         </>
                     )
+                },
+                {
+                    path: "purchase-success",
+                    element: <ProtectedRoute><PurchaseSuccess /></ProtectedRoute>,
                 },
                 {
                     path: "login",
